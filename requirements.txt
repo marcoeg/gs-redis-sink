@@ -1,0 +1,2 @@
+redis>=4.5.0
+gluesync-sdk>=2.0
