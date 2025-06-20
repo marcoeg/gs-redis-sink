@@ -152,3 +152,5 @@ For GlueSync SDK questions, refer to the [SDK Repository](https://gitlab.com/mol
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+Copyright (c) 2025 Graziano Labs Corp. All rights reserved.
