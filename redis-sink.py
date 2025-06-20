@@ -9,8 +9,8 @@ class RedisSinkConnector(BaseConnector):
     def __init__(self):
         # Initialize the base connector from the GlueSync SDK.
         # Question: Does BaseConnector provide any built-in logging or metrics setup
-        # that should be configured here? The SDK documentation (src/gluesync_sdk/connector.py)
-        # does not specify initialization requirements beyond super().__init__().
+        # that should be configured here? 
+        # The SDK documentation does not specify initialization requirements beyond super().__init__().
         super().__init__()
         self.logger = logging.getLogger(__name__)
         self.redis_client = None
@@ -22,21 +22,38 @@ class RedisSinkConnector(BaseConnector):
         """Initialize Redis connection and validate configuration.
 
         Args:
-            config: Dictionary containing Redis connection and sink settings.
+            config: Dictionary containing Redis configuration and connection settings.
 
         Raises:
             ConnectorError: If configuration is invalid or Redis connection fails.
 
         Notes:
+            - Uses a hardcoded default configuration if provided config is empty for development.
             - Validates required keys based on src/gluesync_sdk/config.py's ConnectorConfig approach.
-            - Uses redis-py for Redis interactions, configured with retry and connection pooling.
+            - Uses redis-py for Redis interactions with retry and connection pooling.
             - Question: Does the SDK provide a standard way to validate config keys or schema?
-              The documentation (src/gluesync_sdk/config.py) only shows basic validation,
+              The SDK (src/gluesync_sdk/config.py) only shows basic validation,
               and it's unclear if custom keys like redis_stream_name require registration.
-            - Question: Are there SDK-specific retry or timeout settings that should override
+            - Question: Are there specific retry/timeout settings in GlueSync that should override
               redis-py's retry_on_timeout? The SDK docs lack details on connection management.
+            - Issue: Hardcoding config is temporary for development. Must be removed or toggled
+              for production to respect GlueSync's configuration loading mechanism.
         """
         try:
+            # Use hardcoded default config for development if config is empty
+            # TODO: Remove or toggle this for production deployments
+            if not config:
+                self.logger.warning("No config provided, using hardcoded default for development")
+                config = {
+                    "redis_host": "localhost",
+                    "redis_port": 6379,
+                    "redis_password": None,
+                    "redis_ssl": False,
+                    "redis_stream_name": "gluesync_events",
+                    "redis_key_prefix": "gluesync:",
+                    "redis_batch_size": 100
+                }
+
             # Validate required configuration keys
             required_keys = ["redis_host", "redis_port"]
             for key in required_keys:

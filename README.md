@@ -47,6 +47,8 @@ The GlueSync Redis Sink Connector enables real-time change data capture (CDC) fr
 >The GlueSync repo doesn’t specify how to register connectors with GlueSync. This likely requires GlueSync server configuration, which may be documented elsewhere.
 
 ## Configuration
+>The GlueSync Redis sink connector assumes a JSON dictionary (e.g., in config.json) containing keys like redis_host and redis_port is loaded by GlueSync and passed to the connect method, but the exact file name, location, and validation requirements are undocumented, necessitating a hardcoded default for development.
+
 Configure the connector in GlueSync using a JSON dictionary. Below is an example configuration:
 
 ```json
@@ -60,6 +62,7 @@ Configure the connector in GlueSync using a JSON dictionary. Below is an example
   "redis_batch_size": 100
 }
 ```
+
 
 ### Configuration Options
 | Key                   | Description                                      | Default            | Required |
